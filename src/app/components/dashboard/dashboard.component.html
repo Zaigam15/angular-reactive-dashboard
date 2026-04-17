@@ -1,0 +1,71 @@
+<div class="container">
+
+  <h2 class="title"> Reactive Dashboard</h2>
+
+  <div class="controls">
+
+    <input type="text" placeholder="🔍 Search user..." (input)="search$.next($any($event.target).value)" />
+
+    <select (change)="role$.next($any($event.target).value)">
+      <option value="All">All Roles</option>
+      <option value="Admin">Admin</option>
+      <option value="User">User</option>
+    </select>
+
+    <button (click)="sort$.next('name'); sortAsc = !sortAsc">
+      🔤 Sort Name
+    </button>
+
+    <button (click)="sort$.next('activity'); sortAsc = !sortAsc">
+      📊 Sort Activity
+    </button>
+
+    <button class="refresh" (click)="refresh$.next()">
+      🔄 Refresh
+    </button>
+
+  </div>
+
+  <!-- Data -->
+  <div *ngIf="filteredData$ | async as users; else loading">
+
+    <p class="count">Total Users: {{ users.length }}</p>
+
+    <div *ngIf="users.length === 0" class="empty">
+      No Data Found
+    </div>
+
+    <table *ngIf="users.length > 0">
+
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Activity</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let user of users; trackBy: trackById">
+          <td [innerHTML]="highlight(user.name)"></td>
+
+          <td>
+            <span [ngClass]="user.role === 'Admin' ? 'badge admin' : 'badge user'">
+              {{ user.role }}
+            </span>
+          </td>
+
+          <td>{{ user.activityCount }}</td>
+        </tr>
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <!-- Loading -->
+  <ng-template #loading>
+    <div class="loader"></div>
+  </ng-template>
+
+</div>

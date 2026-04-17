@@ -1,0 +1,1 @@
+export interface Activity { id: number; userId: number; action: string; }
